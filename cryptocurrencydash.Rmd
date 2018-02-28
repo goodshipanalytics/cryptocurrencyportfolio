@@ -1,0 +1,71 @@
+---
+title: "Cryptocurrency Portfolio"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(alphavantager)
+library(knitr)
+library(tidyverse)
+library(data.table)
+
+av_api_key("IP3TG8GBOWDEVU2S")
+args(av_get)
+
+currencyNames <- c("Bitcoin", "Ethereum", "Ripple", "Bitcoin Cash", "Litecoin")
+currencyCodes <- c("BTC", "ETH", "XRP", "BCH", "LTC")
+cryptoCurrencies <- data.frame(currencyNames, currencyCodes)
+
+#bitcoinDF <- av_get(symbol = "ETH", av_fun = "DIGITAL_CURRENCY_DAILY", interval = "daily", market="USD")
+
+cryptoData <- NULL
+
+for (i in 1:length(currencyCodes)) {
+  cryptoData[[i]] <- av_get(symbol = currencyCodes[i], 
+  av_fun = "DIGITAL_CURRENCY_DAILY", interval = "daily", market="USD")
+}
+
+for (i in 1:length(cryptoData)){
+  cryptoData[[i]]$Currency <- currencyNames[[i]]
+}
+
+cryptoDataPlot <- rbindlist(cryptoData)
+cryptoDataPlot2018 <- cryptoDataPlot %>% 
+  filter(timestamp >= "2018-01-01")
+
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+ggplot(data = cryptoDataPlot2018) +
+  geom_line(mapping = aes(x = timestamp, y = close..usd., colour = Currency)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  theme_bw() +
+  xlab("Date") + ylab("Closing value") +
+  theme(text = element_text(size=20))
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
