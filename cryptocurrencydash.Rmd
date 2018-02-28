@@ -19,9 +19,8 @@ args(av_get)
 
 currencyNames <- c("Bitcoin", "Ethereum", "Ripple", "Bitcoin Cash", "Litecoin")
 currencyCodes <- c("BTC", "ETH", "XRP", "BCH", "LTC")
-cryptoCurrencies <- data.frame(currencyNames, currencyCodes)
-
-#bitcoinDF <- av_get(symbol = "ETH", av_fun = "DIGITAL_CURRENCY_DAILY", interval = "daily", market="USD")
+fideInvested <- c(5000, 2500, 1250, 625, 625)
+Owned <- c(0.3699, 3.3074, 598.4297, 0.2668, 2.7681)
 
 cryptoData <- NULL
 
@@ -32,11 +31,29 @@ for (i in 1:length(currencyCodes)) {
 
 for (i in 1:length(cryptoData)){
   cryptoData[[i]]$Currency <- currencyNames[[i]]
+  cryptoData[[i]]$Value <- cryptoData[[i]]$close..usd. * Owned[[i]]
 }
 
 cryptoDataPlot <- rbindlist(cryptoData)
 cryptoDataPlot2018 <- cryptoDataPlot %>% 
   filter(timestamp >= "2018-01-01")
+
+currentValue <- cryptoDataPlot2018 %>%
+  filter(timestamp == max(timestamp)) %>%
+  select(Value)
+
+TotalValue <- c("", "", "", sum(fideInvested), sum(currentValue))
+
+cryptoTibble <- tibble(
+  Currency = currencyNames,
+  Code = currencyCodes,
+  Owned = Owned,
+  Invested = fideInvested,
+  Current = currentValue$Value
+)
+
+cryptoTibbleTotal <- cryptoTibble %>% 
+  add_row(Currency = "Total", Code = "", Owned = "", Invested = sum(fideInvested), Current = sum(currentValue))
 
 ```
 
@@ -54,13 +71,24 @@ ggplot(data = cryptoDataPlot2018) +
   theme(text = element_text(size=20))
 ```
 
+### Portfolio Value
+
+```{r fig.width=15}
+ggplot(data = cryptoDataPlot2018) +
+  geom_line(mapping = aes(x = timestamp, y = Value, colour = Currency)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  theme_bw() +
+  xlab("Date") + ylab("Value ($USD)") +
+  theme(text = element_text(size=20))
+```
+
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Chart B
+### Portfolio
 
 ```{r}
-
+kable(cryptoTibbleTotal)
 ```
 
 ### Chart C
