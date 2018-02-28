@@ -43,14 +43,14 @@ cryptoDataPlot2018 <- cryptoDataPlot %>%
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Chart A
+### Cryptocurrency Closing Values in 2018
 
-```{r}
+```{r fig.width=15}
 ggplot(data = cryptoDataPlot2018) +
   geom_line(mapping = aes(x = timestamp, y = close..usd., colour = Currency)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
   theme_bw() +
-  xlab("Date") + ylab("Closing value") +
+  xlab("Date") + ylab("Closing value ($USD)") +
   theme(text = element_text(size=20))
 ```
 
