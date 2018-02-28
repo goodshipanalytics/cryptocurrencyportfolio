@@ -91,9 +91,7 @@ Column {data-width=350}
 kable(cryptoTibbleTotal)
 ```
 
-### Chart C
+### Dashboard description
 
-```{r}
-
-```
+This dashboard is a prototype for how's we gonna make like big bucks from messing with cryptocurrencies!
 
